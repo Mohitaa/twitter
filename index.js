@@ -1,135 +1,90 @@
-/*var Hapi = require('hapi');
+'use strict';
 
-var server = new Hapi.Server();
+var Hapi = require('hapi');
+var path = require('path');
+require('app-module-path').addPath(__dirname);
+const Bootstrap = require('./Utils/BootStrap');
 
-server.connection({ port: 3000, host: 'localhost' });
+var routes = require("./Routes");                                               //loading routes
+const dbConfig = require('./Config/dbconfig');                                              //loading configurations
+var server = new Hapi.Server();    
 
 
+const Mongoose = require('mongoose');
+Mongoose.Promise = require('bluebird');
 
-
-
-server.register(require('hapi-auth-jwt'), function (err) {
-
-  server.auth.strategy('token', 'jwt', {
-    key: 'GU7Tx9W-mycfXy7jpAuIfTiruCbrGkX0nLHkntSBNuBCgw5oEAZPWno9VCFm5bLb',
-    verifyOptions: {
-      algorithms: [ 'HS256' ],
-      audience: 'ZRNSJTR05fOyC2Sa8ixVf7q61ThgNGmq'
+Mongoose.connect(dbConfig.mongo.URI, function (err) {
+    if (err) {
+        console.log("DB Error: ", err);
+        process.exit(1);
+    } else {
+        console.log('MongoDB Connected');
+       init();
     }
+});
+
+
+
+
+
+
+
+
+server.connection({port : 3003, host : 'localhost'});   
+
+//swagger
+const Pack = require("./package");
+
+const options = {
+    info: {
+            'title': 'ERP API Documentation',
+            'version': Pack.version,
+        }
+    };                                        
+
+
+
+const HapiSwagger = require("hapi-swagger");
+server.register([require('inert'), require('vision'), { 'register' : HapiSwagger, 'options' : options } ],  throwIfError);
+function throwIfError(err){
+    //a callback function to throw error if there is an error
+    if(err){
+        throw err;
+    }
+}
+
+
+//registering routes
+server.route(routes);
+
+
+
+
   
-});
-
-  server.route({
-  method: 'GET',
-  path: '/path_to_your_api',
-  config: { auth: 'token' },
-  handler: function(request, reply) {
-    reply("hello");
-  }
-});
 
 
-  });
+function init()
+{
 
-  server.start(function(err)
-  	{
-
-
-           if (err) {
-                console.log(err);
-            } 
-                console.log('Server running at:', server.info.uri);
-        
-
-
-  	});
-*/
-
-
-var Hapi = require('hapi'),
-    jwt = require('jsonwebtoken'),
-    server = new Hapi.Server();
-
-server.connection({ port: 3000, host: 'localhost' });
-
-var accounts = {
-    123: {
-        id: 123,
-        user: 'john',
-        fullName: 'John Doe',
-        scope: ['a', 'b']
-    }
-};
-
-
-var privateKey = 'BbZJjyoXAdr8BUZuiKKARWimKfrSmQ6fv8kZ7OFfc';
-
-// Use this token to build your request with the 'Authorization' header.  
-// Ex:
-//     Authorization: Bearer <token>
-var token = jwt.sign({ accountId: 123 }, privateKey, { algorithm: 'HS256'} );
-
-
-var validate = function (request, decodedToken, callback) {
-
-    var error,
-        credentials = accounts[decodedToken.accountId] || {};
-
-    if (!credentials) {
-        return callback(error, false, credentials);
-    }
-
-    return callback(error, true, credentials)
-};
-
-
-server.register(require('hapi-auth-jwt'), function (error) {
-
-    server.auth.strategy('token', 'jwt', {
-        key: privateKey,
-        validateFunc: validate,
-        verifyOptions: { algorithms: [ 'HS256' ] }  // only allow HS256 algorithm
-    });
-
-    server.route({
-        method: 'GET',
-        path: '/',
-        config: {
-            auth: 'token',
-            handler:function(request,reply)
-            {
-            	reply("hello");
-            }
+ Bootstrap.bootstrapAdmin(function (err, message) {
+        if (err) {
+            console.log('Error while bootstrapping version : ' + err)
+        } else {
+            console.log(message);
         }
     });
 
-    // With scope requirements
-    server.route({
-        method: 'GET',
-        path: '/withScope',
-        config: {
-            auth: {
-                strategy: 'token',
-                scope: ['a'],
-             
-            },
-               handler:function(request,reply)
-            {
-            	reply("hello withScope");
-            }
-        }
-    });
+
+
+   server.start(function(err){
+    if(err){
+        console.log("Error in starting server: ");
+        console.log(err);
+    }else{
+         console.log('Server running at:', server.info.uri);
+      //  console.log(`Server started at ${host}:${port}`);
+
+    }
 });
 
- server.start(function(err)
-  	{
-
-
-           if (err) {
-                console.log(err);
-            } 
-                console.log('Server running at:', server.info.uri);
-        
-
-
-  	});
+}
