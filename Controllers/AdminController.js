@@ -22,6 +22,7 @@ function loginAdmin(payloadData, callbackRoute) {
             }
         },
         'loginAdmin': ['validateEmail', function (result, cb){
+            console.log(result);
             AdminService.loginAdmin(payloadData, function (err, serviceResponse) {
 
                 console.log("verify login");

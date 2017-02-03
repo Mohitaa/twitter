@@ -3,7 +3,7 @@
 var validateLogin = require("./validateLogin.js");
 
 
-//var fetchEmployee = require("./fetchEmployee.js");
+var LikesController = require("./LikesController.js");
 var employeeSignUp = require("./EmployeeSignUp");
 
 var logoutController = require("./logoutControllers");
@@ -13,7 +13,7 @@ module.exports = {
     validateLogin : validateLogin,
     //loadPage : loadPage,
     //saveProject : saveProject,
-    //fetchEmployee : fetchEmployee,
+    LikesController : LikesController,
     employeeSignUp : employeeSignUp,
     //authTestController : authTestController,
     logoutController : logoutController,

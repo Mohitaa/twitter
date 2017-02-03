@@ -9,7 +9,7 @@ var getAdmin = function (criteria, projection, options, callback) {
 };
 
 //Insert User in DB
-var createAdmin = function (objToSave, callback) {
+var createAdmin = function (objToSave,callback) {
     new Admins(objToSave).save(callback)
 };
 

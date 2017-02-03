@@ -1,11 +1,11 @@
 'use strict';
 
-const controller = require("Controllers/logoutControllers");
+const controller = require("Controllers/showUsers");
 const Joi = require("joi");
 
 const logoutRoute = {
     method : "GET",
-    path : "/auth/logout",
+    path : "/auth/showusers",
     handler : function(request, reply){
         //console.log("authorization >> ", request.headers.authorizations);
         controller(request, function(err, result){

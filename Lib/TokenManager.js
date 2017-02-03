@@ -41,23 +41,61 @@ const setToken = function(tokenData, callback){
     callback(null, token);
 }
 
-const expireToken = function(token, callback){
-    verifyToken(token, function(err, result){
-        if(err){
-            console.log("Error cannot expire");
-            callback(err);
-        }
-        if(result.valid){
+const expireToken = function(request, callback){
+      
+      var    data={};
 
-            console.log("token updated");
-            commonServices.updateData("Employee", {accessToken : token}, {accessToken : null}, null, function(err, update){
-                callback(null);
+            console.log("logout");
+            commonServices.updateData("Employee", {accessToken: {$exists: true, $ne :null}}, {accessToken : null}, null, function(err, result){
+                 if(err){
+                    console.log(err);
+                    callback(err);
+                }else{
+
+                        
+                    console.log(result+"  overall   ");
+
+
+
+
+                    if(result && result.name !=null){
+
+                            for(var key in result)
+                            {
+                                
+                                if(key=="_id")
+                                {
+                                 data._id = result[key];
+
+                             console.log(" id "+key)
+                         }
+                                    if(key=="username")
+                                    {
+                                 data.name = result[key];
+                                 break;
+                             console.log(" username "+ key)
+                         }
+                                    
+                            }
+
+                            data.valid = true;
+                      
+
+
+                    }else{
+                        data.valid = false;
+                        console.log("No usr valid Login")
+                       
+                    }
+                    //console.log("sending data after verification>>>", data);
+                   return callback(null, data);
+
+              
+            }
             });
-        }else {
-            callback("Invalid token");
-        }
-    } );
-}
+        
+    
+}   
 
 module.exports = {
     verifyToken : verifyToken,

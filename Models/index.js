@@ -1,12 +1,12 @@
 'use strict';
 
 var Employee = require("./Employee");
-//var Project = require("./Project");
-//var Client = require("./Client");
+var Admins = require("./Admins");
+var Likes = require("./Likes");
 //var User = require("./User");
 module.exports = {
     Employee : Employee,
-  //  Project : Project,
-   // /Client : Client,
+   Likes : Likes,
+   Admins : Admins
     //User : User
 };

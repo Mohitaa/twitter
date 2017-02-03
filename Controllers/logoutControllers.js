@@ -2,13 +2,19 @@
 
 const tokenManager = require("Lib/TokenManager");
 
-module.exports = function(token, callback){
-    tokenManager.expireToken(token, function(err, result){
+module.exports = function(request, callback){
+    tokenManager.expireToken(request, function(err, result){
         if(err){
             console.log("Error in logging out>> ", err);
-            callback(err);
+           return callback(err);
         }else{
-            callback(null, "Logout Sucess");
+            console.log(result.valid);
+        	if (!result.valid)
+        	{
+
+        		return callback(null, "please login first ");
+        	}
+          return  callback(null, "Logout Sucess");
         }
     });
 }
