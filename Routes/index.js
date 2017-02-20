@@ -6,7 +6,8 @@ var routes = [
     require("./signup"),
      require("./logout"),
     require("./AdminRoute"),
-    require("./likes")
+    require("./likes"),
+    require("./showUser")
    
 ];
 

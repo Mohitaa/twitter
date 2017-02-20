@@ -1,24 +1,24 @@
 'use strict';
 
-const controller = require("Controllers/showUsers");
+const controller = require("Controllers/ShowUserController");
 const Joi = require("joi");
 
-const logoutRoute = {
+const showUsers = {
     method : "GET",
     path : "/auth/showusers",
     handler : function(request, reply){
         //console.log("authorization >> ", request.headers.authorizations);
-        controller(request, function(err, result){
+        controller.usersShow(request, function(err, result){
             if(err){
                 console.log(err);
-                reply("Error in logout");
+                reply("Error in data fetch");
             }else{
                 reply(result);
             }
         })
     },
     config : {
-        description : "logout",
+        description : "admin show users",
         tags : ['api'],
         plugins: {
             'hapi-swagger': {
@@ -28,4 +28,4 @@ const logoutRoute = {
     } 
 }
 
-module.exports = logoutRoute;
+module.exports = showUsers;

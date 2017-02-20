@@ -1,4 +1,4 @@
-'use strict';
+/*'use strict';
 
 var Config = require("Config");
 var mongoose=require("mongoose");
@@ -67,3 +67,4 @@ module.exports = {
     setToken : setToken,
     expireToken : expireToken
 }
+*/
