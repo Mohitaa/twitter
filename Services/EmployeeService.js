@@ -1,5 +1,5 @@
 'use strict';
-
+//employee schema
 const employeeModel = require("Models/Employee");
 
 const EmployeeInsert = function(empInfo, callback){
